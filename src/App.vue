@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import SpotifyWebApi from './spotify-web-api.js'
+//import SpotifyWebApi from './spotify-web-api.js'
 export default {
     data() {
         return {
@@ -25,18 +25,20 @@ export default {
     name: "shuffleApp"
 
 }
-var spotifyApi = new SpotifyWebApi()
+//var spotifyApi = new SpotifyWebApi()
 
 fetch("https://accounts.spotify.com/authorize", {
-    body : {
+    headers : {
         response_type: "code",
         client_id: "5f0d2fec492d4f35a726b74b099bd420",
         // web API only needs user playlist info, playback control is done through playback SDK
         scope: " playlist-read-private playlist-read-collaborative",
         redirect_uri: "http://localhost:8080"
+    },
+    method: "GET"
+}).then(response => response.json()).
+then(data => console.log(data))
 
-    }
-})
 
 
 </script>
