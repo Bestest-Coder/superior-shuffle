@@ -1,13 +1,7 @@
 <template>
-    <div id="header">
-        <p style="text-align: right;">{{ user }}</p>
-    </div>
-    <main>
-
-    </main>
-    <footer>
-
-    </footer>
+    <HeaderBar :user="{{user}}"></HeaderBar>
+    <MainView></MainView>
+    <FooterBar></FooterBar>
 </template>
 
 <script>
@@ -16,30 +10,26 @@ export default {
     data() {
         return {
             token: "",
-            user: "User Info Placeholder"
+            user: "User Info Placeholder",
+            spotifyApi : new SpotifyWebApi()
         }
     },
     methods: {
 
     },
+    created () {
+        let params = new URLSearchParams(document.location.search)
+        let queryToken = params.get("access_token")
+        if(queryToken == null) {
+            window.location.href = "superior-shuffle.herokuapp.com/spotify_login"
+        }
+        this.token = queryToken
+        this.spotifyApi.setAccessToken(queryToken)
+
+    },
     name: "shuffleApp"
 
 }
-//var spotifyApi = new SpotifyWebApi()
-
-fetch("https://accounts.spotify.com/authorize", {
-    headers : {
-        response_type: "code",
-        client_id: "5f0d2fec492d4f35a726b74b099bd420",
-        // web API only needs user playlist info, playback control is done through playback SDK
-        scope: " playlist-read-private playlist-read-collaborative",
-        redirect_uri: "http://localhost:8080"
-    },
-    method: "GET"
-}).then(response => response.json()).
-then(data => console.log(data))
-
-
 
 </script>
 
