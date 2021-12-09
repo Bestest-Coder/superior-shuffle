@@ -1,8 +1,9 @@
 <template>
+    <p>Do the mario</p>
 </template>
 
 <script>
 export default {
-    name: "FooterBar"
+    name: "MainView"
 }
 </script>

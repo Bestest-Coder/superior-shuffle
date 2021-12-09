@@ -5,7 +5,11 @@
 </template>
 
 <script>
-//import SpotifyWebApi from './spotify-web-api.js'
+import HeaderBar from './components/HeaderBar.vue'
+import MainView from './components/MainView.vue'
+import FooterBar from './components/FooterBar.vue'
+
+import SpotifyWebApi from './spotify-web-api.js'
 export default {
     data() {
         return {
