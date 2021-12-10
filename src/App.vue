@@ -1,7 +1,7 @@
 
 <template>
     <HeaderBar :user="user"></HeaderBar>
-    <MainView></MainView>
+    <MainView :api="spotifyApi"></MainView>
     <FooterBar></FooterBar>
 </template>
 
@@ -23,7 +23,7 @@ export default {
 
     },
     created () {
-        var hash = window.location.hash.substr(1);
+        var hash = window.location.hash.substr(3);
         var result = hash.split('&').reduce(function (res, item) {
             var parts = item.split('=');
             res[parts[0]] = parts[1];
@@ -31,10 +31,10 @@ export default {
         }, {});
         
         console.log(result)
-        console.log(window.location.hash.substr(1))
+        console.log(window.location.hash.substr(3))
         let queryToken = result["access_token"]
         if(queryToken == null) {
-            window.location.href = "http://localhost:5000/spotify_login"
+            window.location.href = "http://superior-shuffle.herokuapp.com/spotify_login"
         }
         this.token = queryToken
         this.spotifyApi.setAccessToken(queryToken)
