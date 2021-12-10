@@ -1,4 +1,5 @@
 <template>
+    <p>i want a raise</p>
 </template>
 
 <script>
