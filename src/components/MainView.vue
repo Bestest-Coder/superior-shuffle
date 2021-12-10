@@ -50,28 +50,30 @@ export default {
         return {
             userID: "",
             playingList: [{name: "Hooked on a Feeling", artist: "Blue Sweede"},{name: "Kickstart my Heart", artist: "Motley Crue"}],
-            userPlaylists: [{name: "please do the thing"}],
+            userPlaylists: [],
             searchList: []
         };
     },
     methods: {
-        logPlaylists() {
-            console.log(this.userPlaylists[0])
-        }
+
     },
     created() {
+        /* gets the current userID
+         * sets that id to this.userID
+         * uses that ID to fetch playlists of the user, excluding ones made by spotify
+         * appends those playlists to this.userPlaylists
+         */
         this.api.getMe().then((value) => {this.userID = value.id; return value.id}).then(
             (value)=> {return this.api.getUserPlaylists(value)}).then(
                 (value) => {
-                    console.log(value.items)
+
                     let outList = []
                     value.items.forEach(element => {
                         if(element.owner.display_name != 'Spotify') {
                             outList.push({name: element.name})
                         }
-                        console.log(element.name)
                     })
-                    console.log(outList)
+                    
                     this.userPlaylists = outList
                 })
         
