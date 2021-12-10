@@ -1,6 +1,6 @@
 <template>
     <div id="header">
-            <p style="text-align: right;">{{ user }}</p>
+            <p style="display: flex; justify-content: flex-end;">{{ user }}</p>
     </div>
 </template>
 

@@ -1,4 +1,5 @@
 <template>
+    <p>i want a raise</p>
 </template>
 
 <script>
@@ -8,3 +9,4 @@ export default {
         
     }
 }
+</script>
