@@ -1,7 +1,7 @@
 
 <template>
     <HeaderBar :user="user"></HeaderBar>
-    <MainView :api="spotifyApi"></MainView>
+    <MainView :api="spotifyApi" :refresh_token="refresh_token"></MainView>
     <FooterBar></FooterBar>
 </template>
 
@@ -16,7 +16,8 @@ export default {
         return {
             token: "",
             user: "User Info Placeholder",
-            spotifyApi : new SpotifyWebApi()
+            spotifyApi : new SpotifyWebApi(),
+            refresh_token: ""
         }
     },
     methods: {
@@ -37,6 +38,7 @@ export default {
             window.location.href = "http://superior-shuffle.herokuapp.com/spotify_login"
         }
         this.token = queryToken
+        this.refresh_token = result["refresh_token"]
         this.spotifyApi.setAccessToken(queryToken)
 
     },

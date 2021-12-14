@@ -28,6 +28,16 @@
                     <button @click="logPlaylists">print playlists</button>
                     <li v-for="playlist in userPlaylists" :key="playlist.name">
                         {{playlist.name}}
+                        <button @click="logPlaylistSongs(playlist.uri)">Log playlist's songs</button>
+                        <button @click="getPlaylistSongs(playlist.uri, playlist)">Get playlists's songs</button>
+                            <draggable
+                              :list="playlist.songs"
+                              group="songs"
+                              itemKey="name">
+                                <template #item="{ element }">
+                                    <SongDisplay :songData="element"></SongDisplay>
+                                </template>
+                            </draggable>
                     </li>
                 </ul>
             </div>
@@ -37,25 +47,56 @@
 
 <script>
 import draggable from "vuedraggable"
-import SpotifyWebApi from '../spotify-web-api';
+import SpotifyWebApi from '../spotify-web-api'
+import SongDisplay from './SongDisplay.vue'
 export default {
     name: "MainView",
     props: {
-        api: SpotifyWebApi
+        api: SpotifyWebApi,
+        refresh_token: String
     },
     components: {
-        draggable
+        draggable,
+        SongDisplay
     },
     data() {
         return {
             userID: "",
-            playingList: [{name: "Hooked on a Feeling", artist: "Blue Sweede"},{name: "Kickstart my Heart", artist: "Motley Crue"}],
+            playingList: [],
             userPlaylists: [],
             searchList: []
         };
     },
     methods: {
-
+        logPlaylists() {
+            console.log(this.userPlaylists)
+        },
+        logPlaylistSongs(playlistURI) {
+            console.log(playlistURI)
+            console.log(playlistURI.substring(17))
+            this.api.getPlaylistTracks(playlistURI.substring(17)).then((value) => {console.log(value)}).catch(this.apiErrorCatch)
+        },
+        getPlaylistSongs(playlistURI, playlist) {
+            this.api.getPlaylistTracks(playlistURI.substring(17)).then((value) => {
+                let outSongList = []
+                value.items.forEach(element => {
+                    outSongList.push(element.track)
+                })
+                playlist.songs = outSongList
+            }).catch(this.apiErrorCatch)
+        },
+        logSong(song) {
+            console.log(song)
+        },
+        apiErrorCatch(error) {
+            console.log(error)
+            if(error.status === 401){
+               fetch("http://superior-shuffle.herokuapp.com/spotify_refresh?refresh_token="+this.refresh_token).then((value) => {
+                   console.log(value)
+                   this.api.setAccessToken(value.json()["access_token"])
+               })
+            }
+        }
     },
     created() {
         /* gets the current userID
@@ -70,12 +111,12 @@ export default {
                     let outList = []
                     value.items.forEach(element => {
                         if(element.owner.display_name != 'Spotify') {
-                            outList.push({name: element.name})
+                            outList.push(element)
                         }
                     })
                     
                     this.userPlaylists = outList
-                })
+                }).catch(this.apiErrorCatch)
         
     }
 }
