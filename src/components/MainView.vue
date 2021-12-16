@@ -49,11 +49,12 @@
 import draggable from "vuedraggable"
 import SpotifyWebApi from '../spotify-web-api'
 import SongDisplay from './SongDisplay.vue'
+
 export default {
     name: "MainView",
     props: {
-        api: SpotifyWebApi,
-        refresh_token: String
+        refresh_token: String,
+        initToken: String
     },
     components: {
         draggable,
@@ -62,7 +63,9 @@ export default {
     data() {
         return {
             userID: "",
-            playingList: [],
+            api: new SpotifyWebApi(),
+            token: "",
+            playingList: [{name: "fuckle"}, {name: "buckle"}],
             userPlaylists: [],
             searchList: []
         };
@@ -76,6 +79,7 @@ export default {
             console.log(playlistURI.substring(17))
             this.api.getPlaylistTracks(playlistURI.substring(17)).then((value) => {console.log(value)}).catch(this.apiErrorCatch)
         },
+        // gets songs from a playlistURI, iterate though them adding to a list, then sets the .songs attribute of playlist to that list
         getPlaylistSongs(playlistURI, playlist) {
             this.api.getPlaylistTracks(playlistURI.substring(17)).then((value) => {
                 let outSongList = []
@@ -88,17 +92,23 @@ export default {
         logSong(song) {
             console.log(song)
         },
+        // callback to use in api promises to catch if token has expired
         apiErrorCatch(error) {
             console.log(error)
             if(error.status === 401){
                fetch("http://superior-shuffle.herokuapp.com/spotify_refresh?refresh_token="+this.refresh_token).then((value) => {
                    console.log(value)
                    this.api.setAccessToken(value.json()["access_token"])
+                   this.token = value.json()["access_token"]
                })
             }
         }
     },
     created() {
+        //initialize this.api
+        this.api.setAccessToken(this.initToken)
+        this.token = this.initToken
+        
         /* gets the current userID
          * sets that id to this.userID
          * uses that ID to fetch playlists of the user, excluding ones made by spotify
@@ -128,9 +138,23 @@ export default {
     flex-direction: row;
 }
 
-.song-container {
+.playingList-display {
+    flex-grow: 1;
+}
+
+.inputLists-display {
+    flex-grow: 1;
+    
     display: flex;
     flex-direction: column;
+}
+
+.songSearch-display {
+    flex-grow: 1;
+}
+
+.userPlaylists-display {
+    flex-grow: 1;
 }
 
 </style>

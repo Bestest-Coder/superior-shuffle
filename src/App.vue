@@ -1,7 +1,7 @@
 
 <template>
     <HeaderBar :user="user"></HeaderBar>
-    <MainView :api="spotifyApi" :refresh_token="refresh_token"></MainView>
+    <MainView v-if=" initToken != ''" :refresh_token="refresh_token" :token="token"></MainView>
     <FooterBar></FooterBar>
 </template>
 
@@ -10,13 +10,11 @@ import HeaderBar from "./components/HeaderBar.vue"
 import MainView from "./components/MainView.vue"
 import FooterBar from "./components/FooterBar.vue"
 
-import SpotifyWebApi from './spotify-web-api.js'
 export default {
     data() {
         return {
             token: "",
             user: "User Info Placeholder",
-            spotifyApi : new SpotifyWebApi(),
             refresh_token: ""
         }
     },
@@ -39,7 +37,6 @@ export default {
         }
         this.token = queryToken
         this.refresh_token = result["refresh_token"]
-        this.spotifyApi.setAccessToken(queryToken)
 
     },
     name: "shuffleApp",
